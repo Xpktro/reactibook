@@ -1,28 +1,40 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Container } from 'reactstrap';
 import './App.css';
+import Loader from 'views/common/Loader';
+import Navbar from 'views/common/Navbar';
+import Home from 'views/home/Home';
+import Feed from 'views/feed/Feed';
+import Login from 'views/users/Login';
+import Logout from 'views/users/Logout';
+import Register from 'views/users/Register';
 
 class App extends Component {
   render() {
+    const { isLoaded } = this.props;
+    if(!isLoaded) {
+      return <Loader />;
+    }
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Router>
+        <Fragment>
+          <Navbar />
+          <Container>
+
+            <Route exact path="/" component={Home} />
+            <Route path="/feed" component={Feed} />
+            <Route path="/login" component={Login} />
+            <Route path="/logout" component={Logout} />
+            <Route path="/register" component={Register} />
+          </Container>
+        </Fragment>
+      </Router>
     );
   }
 }
 
-export default App;
+export default connect(state => ({
+  isLoaded: state.firebase.auth.isLoaded,
+}))(App);
